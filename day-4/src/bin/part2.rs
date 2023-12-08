@@ -4,8 +4,9 @@ fn main() -> Result<(), ()> {
     let input = include_str!("input.txt");
 
     let mut count = 0;
+    let mut cards_won: Vec<usize> = vec![1; input.lines().count()];
 
-    for line in input.lines() {
+    for (i, line) in input.lines().enumerate() {
         let ours = line.split(": ").last().unwrap().split("| ").last().unwrap();
         let winners = line.split(": ").last().unwrap().split("| ").nth(0).unwrap();
 
@@ -33,10 +34,12 @@ fn main() -> Result<(), ()> {
 
         let wins = intersect.count();
 
-        if wins > 0 {
-            count += isize::pow(2, (wins - 1) as u32);
+        for j in i + 1..=i + wins {
+            cards_won[j] += cards_won[i];
         }
     }
+
+    cards_won.iter().for_each(|x| count += x);
 
     println!("{count}");
 
